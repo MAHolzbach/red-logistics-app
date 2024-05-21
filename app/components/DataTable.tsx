@@ -3,8 +3,10 @@
 import Skeleton from "@mui/material/Skeleton";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 
+import { useContext, useEffect } from "react";
 import useGetOrders from "../api/useGetOrders";
-import Filters from "./Filters";
+import { OrdersContext, OrdersDispatchContext } from "../context/OrderContext";
+import Filters from "./Controls";
 
 const columns: GridColDef[] = [
   { field: "orderId", headerName: "Order ID", flex: 1.25 },
@@ -25,6 +27,13 @@ const columns: GridColDef[] = [
 const DataTable = () => {
   const { data, error, isLoading } = useGetOrders();
 
+  const orders = useContext(OrdersContext);
+  const dispatch = useContext(OrdersDispatchContext);
+
+  useEffect(() => {
+    dispatch({ payload: data, type: "fetch" });
+  }, [data, dispatch]);
+
   if (error) {
     console.log(error);
   }
@@ -43,7 +52,7 @@ const DataTable = () => {
         <div style={{ height: "auto", width: "100%" }}>
           <Filters />
           <DataGrid
-            rows={data}
+            rows={orders || data}
             columns={columns}
             getRowId={(row) => row.orderId}
             initialState={{
