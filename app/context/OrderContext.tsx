@@ -31,6 +31,9 @@ function ordersReducer(orders: TOrder[], action: any): TOrder[] {
     case "filterBySearch": {
       return action.payload;
     }
+    case "delete": {
+      return action.payload;
+    }
     // case "added": {
     //   return [
     //     ...tasks,
