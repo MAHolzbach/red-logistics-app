@@ -1,11 +1,11 @@
-import { useState } from "react";
 import NewOrderDialog from "./NewOrderDialog";
+import TypeFilter from "./TypeFilter";
 
-const Controls = () => {
-  const [toggleModal, setToggleModal] = useState(false);
+const Controls = ({ originalData }: any) => {
   return (
-    <div className="p-4">
+    <div className="flex p-4 justify-between">
       <NewOrderDialog />
+      <TypeFilter originalData={originalData} />
     </div>
   );
 };

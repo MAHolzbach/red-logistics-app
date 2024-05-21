@@ -37,7 +37,6 @@ export default function NewOrderDialog() {
             const formJson = Object.fromEntries((formData as any).entries());
             dispatch({ payload: formJson, type: "create" });
 
-            console.log(formJson);
             handleClose();
           },
         }}

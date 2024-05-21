@@ -6,7 +6,7 @@ import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { useContext, useEffect } from "react";
 import useGetOrders from "../api/useGetOrders";
 import { OrdersContext, OrdersDispatchContext } from "../context/OrderContext";
-import Filters from "./Controls";
+import Controls from "./Controls";
 
 const columns: GridColDef[] = [
   { field: "orderId", headerName: "Order ID", flex: 1.25 },
@@ -50,7 +50,7 @@ const DataTable = () => {
         </>
       ) : (
         <div style={{ height: "auto", width: "100%" }}>
-          <Filters />
+          <Controls originalData={data} />
           <DataGrid
             rows={orders || data}
             columns={columns}

@@ -25,6 +25,9 @@ function ordersReducer(orders: TOrder[], action: any): TOrder[] {
     case "create": {
       return [...orders, action.payload];
     }
+    case "filterByType": {
+      return action.payload;
+    }
     // case "added": {
     //   return [
     //     ...tasks,
