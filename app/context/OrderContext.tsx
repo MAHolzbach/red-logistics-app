@@ -28,6 +28,9 @@ function ordersReducer(orders: TOrder[], action: any): TOrder[] {
     case "filterByType": {
       return action.payload;
     }
+    case "filterBySearch": {
+      return action.payload;
+    }
     // case "added": {
     //   return [
     //     ...tasks,

@@ -8,6 +8,8 @@ import TextField from "@mui/material/TextField";
 import { FormEvent, useContext, useState } from "react";
 import { OrdersDispatchContext } from "../context/OrderContext";
 
+import { v4 as uuidv4 } from "uuid";
+
 export default function NewOrderDialog() {
   const dispatch = useContext(OrdersDispatchContext);
 
@@ -45,15 +47,17 @@ export default function NewOrderDialog() {
         <DialogContent>
           <DialogContentText>Please enter the new order data.</DialogContentText>
           <TextField
-            autoFocus
-            required
+            InputProps={{
+              readOnly: true,
+            }}
+            defaultValue={uuidv4()}
             margin="dense"
             id="orderId"
             name="orderId"
             label="Order ID"
             type="text"
             fullWidth
-            variant="standard"
+            variant="outlined"
           />
           <TextField
             autoFocus
@@ -64,13 +68,12 @@ export default function NewOrderDialog() {
             label="Customer Name"
             type="text"
             fullWidth
-            variant="standard"
+            variant="outlined"
           />
           <TextField
             InputProps={{
               readOnly: true,
             }}
-            autoFocus
             required
             defaultValue={new Date().toDateString()}
             margin="dense"
@@ -79,7 +82,7 @@ export default function NewOrderDialog() {
             label="Creation Date"
             type="text"
             fullWidth
-            variant="standard"
+            variant="outlined"
           />
           <TextField
             autoFocus
@@ -90,7 +93,7 @@ export default function NewOrderDialog() {
             label="Created By"
             type="text"
             fullWidth
-            variant="standard"
+            variant="outlined"
           />
           <TextField
             autoFocus
@@ -101,12 +104,12 @@ export default function NewOrderDialog() {
             label="Order Type"
             type="text"
             fullWidth
-            variant="standard"
+            variant="outlined"
           />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button type="submit">Subscribe</Button>
+          <Button type="submit">Submit</Button>
         </DialogActions>
       </Dialog>
     </>

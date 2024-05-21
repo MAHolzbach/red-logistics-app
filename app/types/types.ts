@@ -10,3 +10,7 @@ export type TOrderFetchAction = {
   type: string;
   payload: TOrder[];
 };
+
+export type TOriginalDataProp = {
+  originalData: TOrder[];
+};

@@ -7,8 +7,9 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { useContext, useState } from "react";
 import { OrdersDispatchContext } from "../context/OrderContext";
+import { TOriginalDataProp } from "../types/types";
 
-export default function TypeFilter({ originalData }: any) {
+export default function TypeFilter({ originalData }: TOriginalDataProp) {
   const dispatch = useContext(OrdersDispatchContext);
 
   const [orderType, setOrderType] = useState<string[]>([]);
@@ -23,23 +24,27 @@ export default function TypeFilter({ originalData }: any) {
   };
 
   const handleSubmit = () => {
-    const filteredTypes = originalData.filter((item: { orderType: string }) => orderType.includes(item.orderType));
+    const filteredTypes = orderType.length
+      ? originalData.filter((item: { orderType: string }) => orderType.includes(item.orderType))
+      : originalData;
 
     dispatch({ payload: filteredTypes, type: "filterByType" });
   };
 
   return (
     <div>
-      <FormControl sx={{ width: 300 }}>
-        <InputLabel id="demo-multiple-checkbox-label">Tag</InputLabel>
+      <FormControl sx={{ width: 300 }} size="small">
+        <InputLabel id="demo-multiple-checkbox-label">Order Type</InputLabel>
         <Select
           labelId="demo-multiple-checkbox-label"
           id="demo-multiple-checkbox"
+          size="small"
+          margin="dense"
           multiple
           value={orderType}
           onChange={handleChange}
           onClose={handleSubmit}
-          input={<OutlinedInput label="Tag" />}
+          input={<OutlinedInput label="Order Type" />}
           renderValue={(selected) => selected.join(", ")}
         >
           {defaultOrderTypes.map((type) => (
