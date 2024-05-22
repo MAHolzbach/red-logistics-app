@@ -3,7 +3,7 @@ import Button from "@mui/material/Button";
 import InputAdornment from "@mui/material/InputAdornment";
 import TextField from "@mui/material/TextField";
 
-import { useContext, useState } from "react";
+import { FormEvent, useContext, useState } from "react";
 import { OrdersDispatchContext } from "../context/OrderContext";
 import { TOriginalDataProp } from "../types/types";
 
@@ -12,14 +12,16 @@ export default function Searchbar({ originalData }: TOriginalDataProp) {
 
   const [textInput, setTextInput] = useState("");
 
-  const handleSubmit = () => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
     const filteredTypes = originalData.filter((item: { orderId: string }) => item.orderId.includes(textInput));
 
     dispatch({ payload: filteredTypes, type: "filterBySearch" });
   };
 
   return (
-    <div className="flex">
+    <form className="flex" onSubmit={(e) => handleSubmit(e)}>
       <TextField
         onChange={(e) => setTextInput(e.target.value)}
         value={textInput}
@@ -37,13 +39,13 @@ export default function Searchbar({ originalData }: TOriginalDataProp) {
           },
           endAdornment: (
             <InputAdornment position="end">
-              <Button onClick={handleSubmit}>
+              <Button variant="text" type="submit">
                 <SearchIcon />
               </Button>
             </InputAdornment>
           ),
         }}
       />
-    </div>
+    </form>
   );
 }
