@@ -6,6 +6,7 @@ import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { useContext, useEffect } from "react";
 import useGetOrders from "../api/useGetOrders";
 import { OrdersContext, OrdersDispatchContext } from "../context/OrderContext";
+import { TableRowSelectionDispatchContext } from "../context/TableRowSelectionContext";
 import Controls from "./Controls";
 
 const columns: GridColDef[] = [
@@ -29,6 +30,8 @@ const DataTable = () => {
 
   const orders = useContext(OrdersContext);
   const dispatch = useContext(OrdersDispatchContext);
+
+  const selectedRowDispatch = useContext(TableRowSelectionDispatchContext);
 
   useEffect(() => {
     dispatch({ payload: data, type: "fetch" });
@@ -62,6 +65,9 @@ const DataTable = () => {
             }}
             pageSizeOptions={[25, 50]}
             checkboxSelection
+            onRowSelectionModelChange={(rowIds) => {
+              selectedRowDispatch({ payload: rowIds, type: "update" });
+            }}
           />
         </div>
       )}
