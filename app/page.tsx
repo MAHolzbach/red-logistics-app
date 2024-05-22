@@ -1,7 +1,9 @@
 "use client";
 
 import DataTable from "./components/DataTable";
+import DraftCard from "./components/DraftCard";
 import Header from "./components/Header";
+import { DraftOrderProvider } from "./context/DraftOrderContext";
 import { OrdersProvider } from "./context/OrderContext";
 import { TableRowSelectionProvider } from "./context/TableRowSelectionContext";
 
@@ -24,8 +26,11 @@ export default function Page() {
     <ThemeProvider theme={theme}>
       <OrdersProvider>
         <TableRowSelectionProvider>
-          <Header />
-          <DataTable />
+          <DraftOrderProvider>
+            <Header />
+            <DataTable />
+            <DraftCard />
+          </DraftOrderProvider>
         </TableRowSelectionProvider>
       </OrdersProvider>
     </ThemeProvider>

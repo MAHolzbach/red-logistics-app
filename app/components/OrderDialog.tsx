@@ -1,22 +1,32 @@
 import Button from "@mui/material/Button";
+import Checkbox from "@mui/material/Checkbox";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import FormControlLabel from "@mui/material/FormControlLabel";
 import TextField from "@mui/material/TextField";
 
 import { FormEvent, useContext, useState } from "react";
 import { OrdersDispatchContext } from "../context/OrderContext";
 
 import { v4 as uuidv4 } from "uuid";
+import { DraftOrderContext, DraftOrderDispatchContext } from "../context/DraftOrderContext";
 
-export default function NewOrderDialog() {
+export default function OrderDialog({ type }: { type: string }) {
   const dispatch = useContext(OrdersDispatchContext);
+  const dispatchDraftOrder = useContext(DraftOrderDispatchContext);
+
+  const draft = useContext(DraftOrderContext);
 
   const [open, setOpen] = useState(false);
+  const [isDraft, setIsDraft] = useState(false);
+
+  const resumingDraft = type === "draft";
 
   const handleClickOpen = () => {
+    setIsDraft(false);
     setOpen(true);
   };
 
@@ -24,10 +34,22 @@ export default function NewOrderDialog() {
     setOpen(false);
   };
 
+  const handleDraftOrderDispatch = (payload: any, type: string) => {
+    dispatchDraftOrder({ payload, type });
+  };
+
+  const handleOrderDispatch = (payload: any, type: string) => {
+    dispatch({ payload, type });
+
+    if (resumingDraft) {
+      dispatchDraftOrder({ payload: null, type: "clear" });
+    }
+  };
+
   return (
     <>
       <Button variant="contained" onClick={handleClickOpen}>
-        Add Order
+        {resumingDraft ? "Resume Draft" : "Add Order"}
       </Button>
       <Dialog
         open={open}
@@ -38,20 +60,25 @@ export default function NewOrderDialog() {
             event.preventDefault();
             const formData = new FormData(event.currentTarget);
             const formJson = Object.fromEntries((formData as any).entries());
-            dispatch({ payload: formJson, type: "create" });
+
+            formJson.saveAsDraft === "on"
+              ? handleDraftOrderDispatch(formJson, "create")
+              : handleOrderDispatch(formJson, "create");
 
             handleClose();
           },
         }}
       >
-        <DialogTitle>New Order</DialogTitle>
+        <DialogTitle>
+          <p>New Order</p>
+        </DialogTitle>
         <DialogContent>
           <DialogContentText>Please enter the new order data.</DialogContentText>
           <TextField
             InputProps={{
               readOnly: true,
             }}
-            defaultValue={uuidv4()}
+            defaultValue={resumingDraft ? draft?.orderId : uuidv4()}
             margin="dense"
             id="orderId"
             name="orderId"
@@ -61,8 +88,9 @@ export default function NewOrderDialog() {
             variant="outlined"
           />
           <TextField
+            defaultValue={resumingDraft ? draft?.customerName : ""}
             autoFocus
-            required
+            required={!isDraft}
             margin="dense"
             id="customerName"
             name="customerName"
@@ -72,11 +100,11 @@ export default function NewOrderDialog() {
             variant="outlined"
           />
           <TextField
+            defaultValue={resumingDraft ? draft?.createdDate : new Date().toDateString()}
             InputProps={{
               readOnly: true,
             }}
-            required
-            defaultValue={new Date().toDateString()}
+            required={!isDraft}
             margin="dense"
             id="createdDate"
             name="createdDate"
@@ -86,8 +114,9 @@ export default function NewOrderDialog() {
             variant="outlined"
           />
           <TextField
+            defaultValue={resumingDraft ? draft?.createdByUserName : ""}
             autoFocus
-            required
+            required={!isDraft}
             margin="dense"
             id="createdByUserName"
             name="createdByUserName"
@@ -97,8 +126,9 @@ export default function NewOrderDialog() {
             variant="outlined"
           />
           <TextField
+            defaultValue={resumingDraft ? draft?.orderType : ""}
             autoFocus
-            required
+            required={!isDraft}
             margin="dense"
             id="orderType"
             name="orderType"
@@ -107,10 +137,14 @@ export default function NewOrderDialog() {
             fullWidth
             variant="outlined"
           />
+          <FormControlLabel
+            control={<Checkbox id="saveAsDraft" name="saveAsDraft" onClick={() => setIsDraft(!isDraft)} />}
+            label="Save as Draft"
+          />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button type="submit">Submit</Button>
+          <Button type="submit">{isDraft ? "Save Draft" : "Submit Order"}</Button>
         </DialogActions>
       </Dialog>
     </>
